@@ -7,6 +7,7 @@ package controller;
 
 import java.io.IOException;
 import java.util.Map;
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServlet;
@@ -44,6 +45,8 @@ private  String code = "AQDh4IfjVJYl1vIzvadO5Z0Tra16qrUfz2XoVvfgspF7GoxMN8zCf1xc
 		String graph = fbGraph.getFBGraph();
                 Map<String, String> fbProfileData = fbGraph.getGraphData(graph);
                 ServletOutputStream out = response.getOutputStream();
+                RequestDispatcher a = request.getRequestDispatcher("callback.jsp");
+				a.forward(request, response);
                 response.sendRedirect("../callback.jsp?graph"+graph);
 
         response.setContentType("text/html;charset=UTF-8");
