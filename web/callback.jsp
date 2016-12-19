@@ -1,11 +1,8 @@
+
+<%@page import="java.util.Map"%>
 <%@page import="controller.index"%>
 
-<%
-String graph= request.getParameter("graph");
-%>
-
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-
 
 <!DOCTYPE html>
 <html>
@@ -14,7 +11,14 @@ String graph= request.getParameter("graph");
         <title>JSP Page</title>
     </head>
     <body>
-        <h1>Hello World!</h1>
-        <h2><%=graph%></h2>
+        <% 
+    String name = request.getParameter("first_name");
+    String correo = request.getParameter("correo");
+    String gen = request.getParameter("gender");
+        %>
+        <h1>Llegue al callback!</h1>
+        <h2>Nombre del Usuario: <%=name%> </h2>       
+        <h3>Correo Electronico: <%=correo%></h3>
+        <h4>Genero: <%=gen%></h4>
     </body>
 </html>

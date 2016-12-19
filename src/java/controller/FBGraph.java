@@ -17,7 +17,7 @@ public class FBGraph {
     private final String accessToken;
 
 	public FBGraph(String accessToken) {
-		this.accessToken = "EAACz65S60tYBABXuBxKDTayZB8GcjHZBlKmzavq3bnNvsEvh2gTDB9RpsQeew4E1rg7SW0t1mtsgRTdTqGyKf96XD12oe0dtdr3ElfbDEczG7hvP1ztwoQb0ZAkGpbJk618yuaK8ZC6uaCFScGBs0FH7f358eNrLPChClfdN8QZDZD";
+		this.accessToken = accessToken;
 	}
 
 	public String getFBGraph() {

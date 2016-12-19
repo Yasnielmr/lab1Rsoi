@@ -13,6 +13,7 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 
 /**
@@ -20,7 +21,10 @@ import javax.servlet.http.HttpServletResponse;
  * @author admin
  */
 public class index extends HttpServlet {
-private  String code = "AQDh4IfjVJYl1vIzvadO5Z0Tra16qrUfz2XoVvfgspF7GoxMN8zCf1xcK8Yp-rgpWM_y8et4ke9XjQTIP9Fd5Hn-HNvJIiWhzTgSJimJZVldCrZIlBfEPgKSzVnC4jBMrSi9f3j_U_LFl80rDYZvVARL63qoRxq_k2JFIDrk9ndg8ItupsdiLHE4r8krXl4QA7DdBJx_6vMqcxKxeVcLUBWhKm85lq44-6J6FRkxWIelrVkeffqeQcJ6R5KepsFVMZVSd4NmCoXLVZ1of5Yo2eFTQWsYoKwgIgOiMqbtlcUgkMPPD-A9OTha0y6awkKWbl7j99l31e27RB44CsDm9yoc#_=_";
+ 
+    private  String code = "";
+    private static final long serialVersionUID = 1L;
+	
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -33,6 +37,8 @@ private  String code = "AQDh4IfjVJYl1vIzvadO5Z0Tra16qrUfz2XoVvfgspF7GoxMN8zCf1xc
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
        // String code = "";
+         response.setContentType("text/html;charset=UTF-8");
+        try{
         code= request.getParameter("code");
         if(code==null || code.equals("")){
 			throw new RuntimeException(
@@ -40,24 +46,32 @@ private  String code = "AQDh4IfjVJYl1vIzvadO5Z0Tra16qrUfz2XoVvfgspF7GoxMN8zCf1xc
 		}
         	FBConnection fbConnection = new FBConnection();
 		String accessToken = fbConnection.getAccessToken(code);
-
-		FBGraph fbGraph = new FBGraph(accessToken);
+                FBGraph fbGraph = new FBGraph(accessToken);
 		String graph = fbGraph.getFBGraph();
                 Map<String, String> fbProfileData = fbGraph.getGraphData(graph);
-                ServletOutputStream out = response.getOutputStream();
-                RequestDispatcher a = request.getRequestDispatcher("callback.jsp");
-				a.forward(request, response);
-                response.sendRedirect("../callback.jsp?graph"+graph);
-
-        response.setContentType("text/html;charset=UTF-8");
-        out.println("<h1>Facebook Login using Java</h1>");
+                ServletOutputStream out = response.getOutputStream(); 
+                
+                request.setAttribute("Datos del Usuario", fbProfileData);
+                RequestDispatcher reqDisp = request.getRequestDispatcher("../callback.jsp");
+                reqDisp.forward(request, response);
+                out.println("<h1>Facebook Login using Java</h1>");
 		out.println("<h2>Application Main Menu</h2>");
 		out.println("<div>Welcome "+fbProfileData.get("first_name"));
 		out.println("<div>Your Email: "+fbProfileData.get("email"));
 		out.println("<div>You are "+fbProfileData.get("gender"));
-                
+                response.sendRedirect("../callback.jsp");
+        }
+        catch(IOException | RuntimeException | ServletException e)
+        {
+            throw new RuntimeException("ERROR mostrando los datos " + e);
+        }
+        
+                //response.sendRedirect("../callback.jsp?first_name="+out.println("<div>Welcome "+fbProfileData.get("first_name")));
+                 //response.sendRedirect("../callback.jsp;charset=UTF-8");
+            
                 
     }
+    
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
@@ -71,6 +85,7 @@ private  String code = "AQDh4IfjVJYl1vIzvadO5Z0Tra16qrUfz2XoVvfgspF7GoxMN8zCf1xc
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        
         
         processRequest(request, response);
     }
@@ -86,6 +101,22 @@ private  String code = "AQDh4IfjVJYl1vIzvadO5Z0Tra16qrUfz2XoVvfgspF7GoxMN8zCf1xc
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        
+        HttpSession httpSession = request.getSession();
+        String faceCode = request.getParameter("code");
+        String state = request.getParameter("state");
+        String sessionID = httpSession.getId();
+        if (state.equals(sessionID)){
+            try {
+                
+            } catch (Exception e) {
+                e.printStackTrace();
+                
+            }
+            response.sendRedirect(request.getContextPath() +"/callback.jsp");
+        } else {
+            System.err.println("CSRF protection validation");
+        }
         processRequest(request, response);
     }
 
